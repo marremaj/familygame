@@ -1,0 +1,15 @@
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+
+<div class="full-screen">
+    
+    <form action="{% url 'user' %}" method="post">
+        {% csrf_token %}
+        <h2 class="little-title">Välj ett namn</h2>
+        <p>(men int Mumin för det har Emma reserverat)</p>
+        <input type="text" name="username" minlength="5"/>
+        <br/>
+        <button type="submit">Skicka</button>
+    </form>
+</div>

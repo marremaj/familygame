@@ -1,0 +1,55 @@
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+
+<div class="full-screen">
+    <h1 id="subject">{{category}}</h1>
+    <p id="instruction">Skriv 4 ord från kategorin</p>
+    <div id="inputs">
+    <input type="text" name="a1" id="a1" minlength="1"/>
+    <input type="text" name="a2" id="a2" minlength="1"/>
+    <input type="text" name="a3" id="a3" minlength="1"/>
+    <input type="text" name="a4" id="a4" minlength="1"/>
+    <button id="send">Skicka</button>
+    </div>
+    {%csrf_token%}
+    <div hidden id="buttons">
+        <button id="b1" class="answbutton"></button>
+        <button id="b2" class="answbutton"></button>
+        <button id="b3" class="answbutton"></button>
+        <button id="b4" class="answbutton"></button>
+    </div>
+    <button id="next" hidden onclick="location.href='{% url 'votingPage' %}'">Gå till nästa steg</button>
+</div>
+
+<script>
+    $("#send").click(() => {
+        for (let x = 1; x <= 4; x++) {
+            $("#b" + x).text($("#a" + x).val())
+        }
+        $("#inputs").hide()
+        console.log("starting to fetch")
+        
+        const intervaler = () => {
+            $.get("/getQuestion", data => {
+                if (data.done == true) {
+                    $("#subject").text(data.question)
+                    clearInterval(i)
+                    $("#buttons").show()
+                    $("#instruction").text("Välj bästa svar på frågan")
+                }
+                console.log("still fetching")
+            })
+        }
+        const i = setInterval(intervaler, 3000);
+    })
+    $(".answbutton").click( e => {
+        const answ = e.target.innerText
+        console.log(answ)
+        $.post("/postAnswer/", {"answer": answ, csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken').val()}, () => {
+            $("#next").show()
+        })
+    })
+</script>

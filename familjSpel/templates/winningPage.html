@@ -1,0 +1,34 @@
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+
+<div class="full-screen">
+    <h1>The winner is: <span id="winner"></span></h1>
+    <button onclick="location.href='{% url 'resetRound' %}'" id="next" hidden>Nästa runda</button>
+    <ol id="score">
+    </ol>
+</div>
+
+
+<script>
+$(document).ready(function(){
+    const intervaler = () => {
+            $.get("/getWinner", data => {
+                if (data.done == true) {
+                    console.log(data.players)
+                    $("#winner").text(data["winner"].name)
+                    for (const player of data["players"]) {
+                        $("#score").append(`<li>${player["name"]}: ${player["score"]}</li>`)
+                        $("#next").show()
+                    }
+                    clearInterval(i)
+                }
+                console.log("fetching...")
+            })
+    }
+    const i = setInterval(intervaler, 3000);
+  
+})
+</script>

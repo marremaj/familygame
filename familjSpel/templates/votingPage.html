@@ -1,0 +1,41 @@
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+
+<div class="full-screen">
+    <h1 id="loader">Wait for answers from players</h1>
+    <div id="spaceForButtons">
+        {% csrf_token %}
+    </div>
+    <button hidden onclick="location.href='{% url 'winningPage' %}'" id="vote">Rösta</button>
+</div>
+
+
+<script>
+$(document).ready(function(){
+    const intervaler = () => {
+            $.get("/votables", data => {
+                if (data.done == true) {
+                    for (let x = 0; x < data.answers.length; x++) {
+                        console.log(data.answers[x].answer)
+                        $("#loader").hide()
+                        $("#spaceForButtons").append("<button id='b" + data.answers[x].user + "' class='answerButton'>" + data.answers[x].answer + "</button>");
+                    }
+                    clearInterval(i)
+                }
+                console.log("fetching...")
+            })
+    }
+    const i = setInterval(intervaler, 3000);
+    $('#spaceForButtons').on('click', '.answerButton', e => {
+        console.log(e)
+        console.log("id", e.target.id)
+        const a = e.target.id.substring(1)
+        $.post("/votables/", {"vote": Number(a), csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken').val()})
+        $("#vote").show()
+    });
+    
+})
+</script>

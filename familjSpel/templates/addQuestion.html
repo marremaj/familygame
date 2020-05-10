@@ -1,0 +1,13 @@
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+
+<div class="full-screen">
+    <h1>{{category}}</h1>
+    <p>Skriv en fråga vars svar är från kategorin</p>
+    <form action="{% url 'postQuestion' %}" method="post">
+        {% csrf_token %}
+        <input type="text" name="question" minlength="5"></input>
+        <button type="submit">Skicka</button>
+    </form>
+</div>

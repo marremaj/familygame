@@ -1,0 +1,20 @@
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+
+
+<div class="full-screen">
+    <h2 class="big-title">Welcome {{user}}</h2>
+     <button onclick="location.href='{% url 'logout' %}'" class="small">Logga bort dig</button>
+     <button onclick="location.href='{% url 'gamePage' %}'" class="small">UPDATERA SIDA</button>
+     <br/>
+     <h5>Lista på deltagare</h5>
+     <ul>
+     {% for player in players %}
+        <li>{{player}}</li>
+     {% endfor %}
+     </ul>
+     {% if master %}
+     <button onclick="location.href='{% url 'startRound' %}'">STARTA SPELET</button>
+     {% endif %}
+</div>
